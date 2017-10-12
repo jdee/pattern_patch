@@ -5,5 +5,5 @@ require 'rspec/simplecov'
 
 require 'pattern_patch'
 
-# SimpleCov.minimum_coverage 95
+SimpleCov.minimum_coverage 95
 SimpleCov.start
