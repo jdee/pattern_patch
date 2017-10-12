@@ -1,3 +1,4 @@
 --require spec_helper
 --color
---format d
+--format RspecJunitFormatter
+--out test_results/report.xml
