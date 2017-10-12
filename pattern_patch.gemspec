@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
                        "Many patches can be reverted."
   spec.authors     = ["Jimmy Dee"]
   spec.email       = 'jgvdthree@gmail.com'
-  spec.files       = ["lib/**/*.rb"]
+  spec.files       = Dir["lib/**/*.rb"]
   spec.homepage    = 'http://github.com/jdee/pattern_patch'
   spec.license     = 'MIT'
 
