@@ -39,7 +39,7 @@ jobs:
 
       # collect reports
       - store_test_results:
-          path: ~/repo/test_results/report.xml
+          path: ~/repo/test_results/report.json
       - store_artifacts:
           path: ~/repo/test_results
           destination: test-results
