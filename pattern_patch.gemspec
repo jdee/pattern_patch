@@ -6,7 +6,9 @@ Gem::Specification.new do |spec|
   spec.name        = 'pattern_patch'
   spec.version     = PatternPatch::VERSION
   spec.summary     = "Apply and revert pattern-based patches to text files of any kind"
-  spec.description = "More to come"
+  spec.description = "This is a utility gem that identifies positions in any text using regular expressions "
+                       "and then inserts patch text at the specified location or replaces matching text. "
+                       "Many patches can be reverted."
   spec.authors     = ["Jimmy Dee"]
   spec.email       = 'jgvdthree@gmail.com'
   spec.files       = ["lib/**/*.rb"]
