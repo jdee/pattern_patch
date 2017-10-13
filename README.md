@@ -43,7 +43,7 @@ require "pattern_patch"
 modified = File.open("AndroidManifest.xml") do |file|
   PatternPatch::Utilities.apply_patch file.read,
                                       /(s\.name\s*=\s*)"MyPod"/,
-                                      \1"MyOtherPod"',
+                                      '\1"MyOtherPod"',
                                       false,
                                       :replace,
                                       0
