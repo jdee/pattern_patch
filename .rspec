@@ -2,4 +2,4 @@
 --color
 --format d
 --format RspecJunitFormatter
---out test-results/rspec.xml
+--out test-results/rspec/rspec.xml
