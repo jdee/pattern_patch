@@ -35,11 +35,11 @@ jobs:
       - run:
           name: run tests
           command: |
-            bundle exec rake ci
+            bundle exec rake
 
       # collect reports
       - store_test_results:
-          path: ~/repo/test_results/report.json
+          path: ~/repo/test-results/rspec.xml
       - store_artifacts:
-          path: ~/repo/test_results
+          path: ~/repo/test-results
           destination: test-results
