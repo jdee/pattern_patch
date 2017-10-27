@@ -28,7 +28,7 @@ jobs:
 
       - save_cache:
           paths:
-            - ./venv
+            - ./vendor
           key: v1-dependencies-{{ checksum "Gemfile" }}
 
       # run tests!
