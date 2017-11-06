@@ -29,6 +29,86 @@ describe PatternPatch::Patch do
 
   describe '#apply' do
     it 'passes field values to the Utilities#apply_patch method' do
+      patch = PatternPatch::Patch.new regexp: /x/, text: 'y'
+      expect(File).to receive(:read).with('file.txt') { 'x' }
+
+      expect(PatternPatch::Utilities).to receive(:apply_patch).with(
+        'x',
+        patch.regexp,
+        patch.text,
+        patch.global,
+        patch.mode, 0
+      ) { 'xy' }
+
+      expect(File).to receive(:write).with('file.txt', 'xy')
+
+      patch.apply ['file.txt']
+    end
+
+    it 'passes the offset option if present' do
+      patch = PatternPatch::Patch.new regexp: /x/, text: 'y'
+      expect(File).to receive(:read).with('file.txt') { 'x' }
+
+      expect(PatternPatch::Utilities).to receive(:apply_patch).with(
+        'x',
+        patch.regexp,
+        patch.text,
+        patch.global,
+        patch.mode,
+        1
+      ) { 'x' }
+
+      expect(File).to receive(:write).with('file.txt', 'x')
+
+      patch.apply ['file.txt'], offset: 1
+    end
+  end
+
+  describe '#revert' do
+    it 'passes field values to the Utilities#revert_patch method' do
+      patch = PatternPatch::Patch.new regexp: /x/, text: 'y'
+      expect(File).to receive(:read).with('file.txt') { 'xy' }
+
+      expect(PatternPatch::Utilities).to receive(:revert_patch).with(
+        'xy',
+        patch.regexp,
+        patch.text,
+        patch.global,
+        patch.mode, 0
+      ) { 'x' }
+
+      expect(File).to receive(:write).with('file.txt', 'x')
+
+      patch.revert ['file.txt']
+    end
+
+    it 'passes the offset option if present' do
+      patch = PatternPatch::Patch.new regexp: /x/, text: 'y'
+      expect(File).to receive(:read).with('file.txt') { 'x' }
+
+      expect(PatternPatch::Utilities).to receive(:revert_patch).with(
+        'x',
+        patch.regexp,
+        patch.text,
+        patch.global,
+        patch.mode,
+        1
+      ) { 'x' }
+
+      expect(File).to receive(:write).with('file.txt', 'x')
+
+      patch.revert ['file.txt'], offset: 1
+    end
+  end
+
+  describe '::from_yaml' do
+    it 'loads a patch from a YAML file' do
+      expect(YAML).to receive(:load_file).with('file.yml') { { regexp: 'x', text: 'y', mode: 'prepend', global: true } }
+      patch = PatternPatch::Patch.from_yaml 'file.yml'
+      expect(patch.regexp).to eq(/x/)
+      expect(patch.text).to eq 'y'
+      expect(patch.mode).to eq :prepend
+      expect(patch.global).to be true
     end
   end
 end

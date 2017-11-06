@@ -10,6 +10,17 @@ module PatternPatch
     class << self
       def from_yaml(path)
         hash = YAML.load_file path
+
+        # Adjust string fields from YAML
+
+        if hash[:regexp].kind_of? String
+          hash[:regexp] = /#{hash[:regexp]}/
+        end
+
+        if hash[:mode].kind_of? String
+          hash[:mode] = hash[:mode].to_sym
+        end
+
         new hash
       end
     end
@@ -22,7 +33,7 @@ module PatternPatch
     end
 
     def apply(files, options = {})
-      offset = options.offset || 0
+      offset = options[:offset] || 0
 
       files.each do |path|
         modified = Utilities.apply_patch File.read(path),
@@ -36,7 +47,7 @@ module PatternPatch
     end
 
     def revert(files, options = {})
-      offset = options.offset || 0
+      offset = options[:offset] || 0
 
       files.each do |path|
         modified = Utilities.revert_patch File.read(path),
