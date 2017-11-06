@@ -18,7 +18,7 @@ module PatternPatch
       @regexp = options[:regexp]
       @text = options[:text]
       @mode = options[:mode] || :append
-      @global = options[:global]
+      @global = options[:global].nil? ? false : options[:global]
     end
 
     def apply(files, options = {})

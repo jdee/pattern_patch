@@ -1,11 +1,11 @@
 describe PatternPatch::Patch do
   describe 'initialization' do
     it 'initializes parameters from options' do
-      patch = PatternPatch::Patch.new regexp: //, text: '', mode: :append, global: false
+      patch = PatternPatch::Patch.new regexp: //, text: '', mode: :prepend, global: true
       expect(patch.regexp).to eq(//)
       expect(patch.text).to eq ''
-      expect(patch.mode).to eq :append
-      expect(patch.global).to be false
+      expect(patch.mode).to eq :prepend
+      expect(patch.global).to be true
     end
 
     it 'initializes to default values when no options passed' do
@@ -13,7 +13,7 @@ describe PatternPatch::Patch do
       expect(patch.regexp).to be_nil
       expect(patch.text).to be_nil
       expect(patch.mode).to eq :append
-      expect(patch.global).to be_nil
+      expect(patch.global).to be false
     end
   end
 
