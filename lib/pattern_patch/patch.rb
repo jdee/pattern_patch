@@ -1,3 +1,4 @@
+require "active_support/core_ext/hash"
 require "yaml"
 
 module PatternPatch
@@ -9,7 +10,7 @@ module PatternPatch
 
     class << self
       def from_yaml(path)
-        hash = YAML.load_file path
+        hash = YAML.load_file(path).symbolize_keys
 
         # Adjust string fields from YAML
 
@@ -34,6 +35,7 @@ module PatternPatch
 
     def apply(files, options = {})
       offset = options[:offset] || 0
+      files = [files] if files.kind_of? String
 
       files.each do |path|
         modified = Utilities.apply_patch File.read(path),
@@ -48,6 +50,7 @@ module PatternPatch
 
     def revert(files, options = {})
       offset = options[:offset] || 0
+      files = [files] if files.kind_of? String
 
       files.each do |path|
         modified = Utilities.revert_patch File.read(path),

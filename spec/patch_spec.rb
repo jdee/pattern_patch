@@ -42,7 +42,7 @@ describe PatternPatch::Patch do
 
       expect(File).to receive(:write).with('file.txt', 'xy')
 
-      patch.apply ['file.txt']
+      patch.apply 'file.txt'
     end
 
     it 'passes the offset option if present' do
@@ -60,7 +60,7 @@ describe PatternPatch::Patch do
 
       expect(File).to receive(:write).with('file.txt', 'x')
 
-      patch.apply ['file.txt'], offset: 1
+      patch.apply 'file.txt', offset: 1
     end
   end
 
@@ -79,7 +79,7 @@ describe PatternPatch::Patch do
 
       expect(File).to receive(:write).with('file.txt', 'x')
 
-      patch.revert ['file.txt']
+      patch.revert 'file.txt'
     end
 
     it 'passes the offset option if present' do
@@ -97,7 +97,7 @@ describe PatternPatch::Patch do
 
       expect(File).to receive(:write).with('file.txt', 'x')
 
-      patch.revert ['file.txt'], offset: 1
+      patch.revert 'file.txt', offset: 1
     end
   end
 
