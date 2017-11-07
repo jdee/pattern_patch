@@ -62,3 +62,30 @@ Load a patch defined in YAML and apply it.
 ```Ruby
 PatternPatch::Patch.from_yaml("patch.yaml").apply "file.txt"
 ```
+
+#### Define patch text in external files
+
+Load the contents of a file to use for the insertion/substitution text:
+
+```Ruby
+PatternPatch::Patch.new(
+  regexp: /\z/,
+  text_file: "text_to_insert_at_end.txt",
+  mode: :append
+)
+```
+
+When loading from a YAML file, the `text_file` path is interpreted relative
+to the directory of the YAML file, e.g.:
+
+**patch.yaml:**
+
+```YAML
+text_file: text_to_insert_at_end.txt
+```
+
+```Ruby
+PatternPatch::Patch.from_yaml("/path/to/patches/patch.yaml")
+```
+
+This will load the contents of `/path/to/patches/text_to_insert_at_end.txt`.

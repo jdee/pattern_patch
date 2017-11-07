@@ -7,6 +7,7 @@ module PatternPatch
     attr_accessor :text
     attr_accessor :mode
     attr_accessor :global
+    attr_reader :text_file
 
     class << self
       def from_yaml(path)
@@ -22,15 +23,33 @@ module PatternPatch
           hash[:mode] = hash[:mode].to_sym
         end
 
+        if hash[:text_file]
+          hash[:text_file] = File.expand_path hash[:text_file], File.dirname(path)
+        end
+
         new hash
       end
     end
 
     def initialize(options = {})
+      raise ArgumentError, "text and text_file are mutually exclusive" if options[:text] && options[:text_file]
+
       @regexp = options[:regexp]
-      @text = options[:text]
+      @text_file = options[:text_file]
+
+      if @text_file
+        @text = File.read @text_file
+      else
+        @text = options[:text]
+      end
+
       @mode = options[:mode] || :append
       @global = options[:global].nil? ? false : options[:global]
+    end
+
+    def text_file=(path)
+      @text_file = path
+      @text = File.read path if path
     end
 
     def apply(files, options = {})
