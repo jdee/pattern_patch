@@ -5,9 +5,9 @@ module PatternPatch
   class Patch
     attr_accessor :regexp
     attr_accessor :text
-    attr_accessor :text_file
     attr_accessor :mode
     attr_accessor :global
+    attr_reader :text_file
 
     class << self
       def from_yaml(path)
