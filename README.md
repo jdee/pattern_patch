@@ -89,3 +89,19 @@ PatternPatch::Patch.from_yaml("/path/to/patches/patch.yaml")
 ```
 
 This will load the contents of `/path/to/patches/text_to_insert_at_end.txt`.
+
+#### ERB in text and text_file
+
+You can use ERB in the `text` value or the contents of a `text_file` if you pass
+a `:binding` option to `#apply`:
+
+```Ruby
+replacement_text = "y"
+PatternPatch::Patch.new(
+  regexp: /x/,
+  text: '<%= replacement_text %>',
+  mode: :replace
+).apply file_path, binding: binding
+```
+
+If the `:binding` parameter is not passed, ERB is not invoked.

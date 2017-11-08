@@ -37,7 +37,8 @@ describe PatternPatch::Patch do
         patch.regexp,
         patch.text,
         patch.global,
-        patch.mode, 0
+        patch.mode,
+        0
       ) { 'xy' }
 
       expect(File).to receive(:write).with('file.txt', 'xy')
@@ -61,6 +62,25 @@ describe PatternPatch::Patch do
       expect(File).to receive(:write).with('file.txt', 'x')
 
       patch.apply 'file.txt', offset: 1
+    end
+
+    it 'uses ERB if a :binding option is present' do
+      replacement_text = "y"
+      patch = PatternPatch::Patch.new regexp: /x/, text: '<%= replacement_text %>'
+      expect(File).to receive(:read).with('file.txt') { 'x' }
+
+      expect(PatternPatch::Utilities).to receive(:apply_patch).with(
+        'x',
+        patch.regexp,
+        replacement_text,
+        patch.global,
+        patch.mode,
+        0
+      ) { 'xy' }
+
+      expect(File).to receive(:write).with('file.txt', 'xy')
+
+      patch.apply 'file.txt', binding: binding
     end
   end
 
@@ -98,6 +118,24 @@ describe PatternPatch::Patch do
       expect(File).to receive(:write).with('file.txt', 'x')
 
       patch.revert 'file.txt', offset: 1
+    end
+
+    it 'uses ERB if a :binding option is present' do
+      replacement_text = "y"
+      patch = PatternPatch::Patch.new regexp: /x/, text: '<%= replacement_text %>'
+      expect(File).to receive(:read).with('file.txt') { 'xy' }
+
+      expect(PatternPatch::Utilities).to receive(:revert_patch).with(
+        'xy',
+        patch.regexp,
+        replacement_text,
+        patch.global,
+        patch.mode, 0
+      ) { 'x' }
+
+      expect(File).to receive(:write).with('file.txt', 'x')
+
+      patch.revert 'file.txt', binding: binding
     end
   end
 
