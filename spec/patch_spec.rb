@@ -64,7 +64,25 @@ describe PatternPatch::Patch do
       patch.apply 'file.txt', offset: 1
     end
 
-    it 'uses ERB if a :binding option is present' do
+    it 'uses ERB with a default binding if :binding option absent' do
+      patch = PatternPatch::Patch.new regexp: /x/, text: '<%= PatternPatch::VERSION %>'
+      expect(File).to receive(:read).with('file.txt') { 'x' }
+
+      expect(PatternPatch::Utilities).to receive(:apply_patch).with(
+        'x',
+        patch.regexp,
+        PatternPatch::VERSION,
+        patch.global,
+        patch.mode,
+        0
+      ) { "x#{PatternPatch::VERSION}" }
+
+      expect(File).to receive(:write).with('file.txt', "x#{PatternPatch::VERSION}")
+
+      patch.apply 'file.txt', binding: binding
+    end
+
+    it 'passes a :binding option to ERB if present' do
       replacement_text = "y"
       patch = PatternPatch::Patch.new regexp: /x/, text: '<%= replacement_text %>'
       expect(File).to receive(:read).with('file.txt') { 'x' }
@@ -120,7 +138,24 @@ describe PatternPatch::Patch do
       patch.revert 'file.txt', offset: 1
     end
 
-    it 'uses ERB if a :binding option is present' do
+    it 'uses ERB with a default binding if :binding option absent' do
+      patch = PatternPatch::Patch.new regexp: /x/, text: '<%= PatternPatch::VERSION %>'
+      expect(File).to receive(:read).with('file.txt') { "x#{PatternPatch::VERSION}" }
+
+      expect(PatternPatch::Utilities).to receive(:revert_patch).with(
+        "x#{PatternPatch::VERSION}",
+        patch.regexp,
+        PatternPatch::VERSION,
+        patch.global,
+        patch.mode, 0
+      ) { 'x' }
+
+      expect(File).to receive(:write).with('file.txt', 'x')
+
+      patch.revert 'file.txt', binding: binding
+    end
+
+    it 'passes a :binding option to ERB if present' do
       replacement_text = "y"
       patch = PatternPatch::Patch.new regexp: /x/, text: '<%= replacement_text %>'
       expect(File).to receive(:read).with('file.txt') { 'xy' }
