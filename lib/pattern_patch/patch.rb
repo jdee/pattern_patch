@@ -57,9 +57,10 @@ module PatternPatch
       offset = options[:offset] || 0
       files = [files] if files.kind_of? String
 
-      patch_text = text
       if options[:binding]
-        patch_text = ERB.new(text, nil, nil, "@template").result(options[:binding])
+        patch_text = ERB.new(text).result(options[:binding])
+      else
+        patch_text = text
       end
 
       files.each do |path|
@@ -77,9 +78,10 @@ module PatternPatch
       offset = options[:offset] || 0
       files = [files] if files.kind_of? String
 
-      patch_text = text
       if options[:binding]
-        patch_text = ERB.new(text, nil, nil, "@template").result(options[:binding])
+        patch_text = ERB.new(text).result(options[:binding])
+      else
+        patch_text = text
       end
 
       files.each do |path|
