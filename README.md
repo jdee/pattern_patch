@@ -105,3 +105,18 @@ PatternPatch::Patch.new(
 ```
 
 If the `:binding` parameter is not passed, ERB is not invoked.
+
+#### Regular expressions with modifiers in YAML
+
+The `regexp` field in a YAML file may be specified with or without slashes
+or a modifier:
+
+```YAML
+regexp: '^X' # Results in /^X/
+```
+
+```YAML
+regexp: '/^X/i' # Results in /^X/i
+```
+
+Currently only the slash literal notation is supported in YAML.

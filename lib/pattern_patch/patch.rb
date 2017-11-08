@@ -17,7 +17,23 @@ module PatternPatch
         # Adjust string fields from YAML
 
         if hash[:regexp].kind_of? String
-          hash[:regexp] = /#{hash[:regexp]}/
+          regexp_string = hash[:regexp]
+          if (matches = %r{^/(.+)/([imx]*)$}.match regexp_string)
+            flags = 0
+            if matches[2] =~ /i/
+              flags |= Regexp::IGNORECASE
+            end
+            if matches[2] =~ /x/
+              flags |= Regexp::EXTENDED
+            end
+            if matches[2] =~ /m/
+              flags |= Regexp::MULTILINE
+            end
+            hash[:regexp] = Regexp.new matches[1], flags
+            puts "Regexp from YAML: #{hash[:regexp].inspect}"
+          else
+            hash[:regexp] = /#{regexp_string}/
+          end
         end
 
         if hash[:mode].kind_of? String
