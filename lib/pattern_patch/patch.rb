@@ -30,7 +30,6 @@ module PatternPatch
               flags |= Regexp::MULTILINE
             end
             hash[:regexp] = Regexp.new matches[1], flags
-            puts "Regexp from YAML: #{hash[:regexp].inspect}"
           else
             hash[:regexp] = /#{regexp_string}/
           end
