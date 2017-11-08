@@ -92,8 +92,17 @@ This will load the contents of `/path/to/patches/text_to_insert_at_end.txt`.
 
 #### ERB in text and text_file
 
-You can use ERB in the `text` value or the contents of a `text_file` if you pass
-a `:binding` option to `#apply`:
+ERB is processed in the `text` value or the contents of a `text_file`:
+
+```Ruby
+PatternPatch::Patch.new(
+  regexp: /x/,
+  text: '<%= PatternPatch::VERSION %>',
+  mode: :replace
+).apply file_path
+```
+
+Optionally pass a `:binding` option to `#apply` to use a specific Binding:
 
 ```Ruby
 replacement_text = "y"
@@ -104,7 +113,7 @@ PatternPatch::Patch.new(
 ).apply file_path, binding: binding
 ```
 
-If the `:binding` parameter is not passed, ERB is not invoked.
+This is particularly useful with a `text_file` argument.
 
 #### Regular expressions with modifiers in YAML
 
@@ -112,11 +121,50 @@ The `regexp` field in a YAML file may be specified with or without slashes
 or a modifier:
 
 ```YAML
-regexp: '^X' # Results in /^X/
+# Results in /^x/
+regexp: '^x'
 ```
 
 ```YAML
-regexp: '/^X/i' # Results in /^X/i
+# Results in /^x/i
+regexp: '/^x/i'
 ```
 
 Currently only the slash literal notation is supported in YAML.
+
+### Why use pattern_patch?
+
+Modifying files from code is a common task. When modifying a file that uses a
+standard format, such as XML or JSON, you can use a standard library in almost
+any language to parse, interpret and update file contents.
+
+If you have to patch other formatted text, particularly source code, there may
+not be a standard library available to parse a given format. In addition, using
+a library limits control over formatting. If you use REXML to modify XML, it
+will generate a file using single quotes for all attributes. While this is
+legitimate XML, it can cause problems in some cases, and it generates a diff
+that shows irrelevant, inconsequential changes. Some XML libraries
+can make other changes to the file format, such as joining multiline tags. In
+some cases (e.g., Android manifests) this is quite visible and annoying.
+
+This gem offers a more general solution to the problem. A `Patch` is defined as
+an operation that can be performed on any file at all. If the file's contents do
+not match the `#regexp` attribute, no change is made, but the patch may still be
+applied. These operations may be
+externally defined in separate files or in code (or using a combination of
+both). Further, many patches may be reverted by recognizing
+the pattern that would result from application of the patch and reversing its
+effect.
+
+This gem is used extensively in the
+[branch_io_cli](https://github.com/BranchMetrics/branch_io_cli) gem to patch
+source code, Podfiles and Cartfiles. A collection of patches is kept in
+`lib/assets/patches`, both YAML patch definitions and source patches using ERB.
+The PatchHelper class easily loads the patch assets and applies them to the
+relevant files. The process there is similar to rendering partial templates in a
+web framework like Rails. It is also used in the
+[patch](https://github.com/jdee/fastlane-plugin-patch) plugin for Fastlane. In
+fact this gem grew out of that plugin.
+
+This idea was loosely inspired by Facebook's
+[`react-native link` automation for Android](https://github.com/facebook/react-native/tree/master/local-cli/link/android/patches).
