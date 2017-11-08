@@ -1,4 +1,5 @@
 require "active_support/core_ext/hash"
+require "erb"
 require "yaml"
 
 module PatternPatch
@@ -56,10 +57,15 @@ module PatternPatch
       offset = options[:offset] || 0
       files = [files] if files.kind_of? String
 
+      patch_text = text
+      if options[:binding]
+        patch_text = ERB.new(text, nil, nil, "@template").result(options[:binding])
+      end
+
       files.each do |path|
         modified = Utilities.apply_patch File.read(path),
                                          regexp,
-                                         text,
+                                         patch_text,
                                          global,
                                          mode,
                                          offset
@@ -71,10 +77,15 @@ module PatternPatch
       offset = options[:offset] || 0
       files = [files] if files.kind_of? String
 
+      patch_text = text
+      if options[:binding]
+        patch_text = ERB.new(text, nil, nil, "@template").result(options[:binding])
+      end
+
       files.each do |path|
         modified = Utilities.revert_patch File.read(path),
                                           regexp,
-                                          text,
+                                          patch_text,
                                           global,
                                           mode,
                                           offset
