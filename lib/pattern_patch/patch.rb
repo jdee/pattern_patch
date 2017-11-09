@@ -3,14 +3,37 @@ require "erb"
 require "yaml"
 
 module PatternPatch
+  # The PatternPatch::Patch class defines a patch as an operation that
+  # may be applied to any file. Often the operation may also be reverted.
   class Patch
+    # Regexp defining one or more matching regions in a file.
     attr_accessor :regexp
+
+    # String with text to use in the patch operation. May contain ERB.
     attr_accessor :text
+
+    # Symbol specifying the patch mode: :append (default), :prepend or :replace
     attr_accessor :mode
+
+    # Setting this to true will apply the patch to all matches in the file.
+    # By default (when false), the patch is only applied to the first match.
     attr_accessor :global
+
+    # If set to a file path, the contents of that file will be used to populate
+    # the text attribute. Setting this after construction modifies the text
+    # field.
     attr_reader :text_file
 
     class << self
+      # Load a Patch from a YAML file. The following special processing applies:
+      # The mode field is converted to a symbol. The text_file field will be
+      # interpreted relative to the YAML file. A Regexp will be constructed from
+      # the regexp field using Regexp.new unless it is a String containing a
+      # Regexp literal using slash delimiters, e.g. /x/i. This format may be
+      # used to specify a Regexp with modifiers in YAML. Raises if the file
+      # cannot be loaded.
+      #
+      # [patch] [String] Path to a YAML file containing a patch definition.
       def from_yaml(path)
         hash = YAML.load_file(path).symbolize_keys
 
@@ -47,6 +70,11 @@ module PatternPatch
       end
     end
 
+    # Construct a new Patch from the options. The following fields are mapped
+    # to the corresponding attributes: :regexp, :text, :text_file, :mode,
+    # :global. Raises ArgumentError if both :text and :text_file are specified.
+    #
+    # [options] [Hash] Parameters used to construct the Patch
     def initialize(options = {})
       raise ArgumentError, "text and text_file are mutually exclusive" if options[:text] && options[:text_file]
 
@@ -68,6 +96,13 @@ module PatternPatch
       @text = File.read path if path
     end
 
+    # Applies the patch to one or more files. ERB is processed in the text
+    # field, whether it comes from a text_file or not. Pass a Binding to
+    # ERB using the :binding option. Pass the :offset option to specify a
+    # starting offset, in characters, from the beginning of the file.
+    #
+    # [files] [Array or String] One or more file paths to which to apply the patch.
+    # [options] [Hash] Options for applying the patch.
     def apply(files, options = {})
       offset = options[:offset] || 0
       files = [files] if files.kind_of? String
@@ -85,6 +120,14 @@ module PatternPatch
       end
     end
 
+
+    # Reverse the effect of a patch on one or more files. ERB is processed in the text
+    # field, whether it comes from a text_file or not. Pass a Binding to
+    # ERB using the :binding option. Pass the :offset option to specify a
+    # starting offset, in characters, from the beginning of the file.
+    #
+    # [files] [Array or String] One or more file paths to which to apply the patch.
+    # [options] [Hash] Options for applying the patch.
     def revert(files, options = {})
       offset = options[:offset] || 0
       files = [files] if files.kind_of? String
