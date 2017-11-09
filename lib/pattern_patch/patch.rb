@@ -120,7 +120,6 @@ module PatternPatch
       end
     end
 
-
     # Reverse the effect of a patch on one or more files. ERB is processed in the text
     # field, whether it comes from a text_file or not. Pass a Binding to
     # ERB using the :binding option. Pass the :offset option to specify a
