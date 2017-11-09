@@ -4,12 +4,12 @@ module PatternPatch
       # Add the specified text after the specified pattern.
       # Returns a modified copy of the string.
       #
-      # :contents: A string to modify, e.g. the contents of a file
-      # :regexp: A regular expression specifying a pattern to be matched
-      # :text: Text to be appended to the specified pattern
-      # :global: Boolean flag. If true, patch all occurrences of the regex.
-      # :mode: :append, :prepend or :replace to specify how to apply the patch
-      # :offset: Starting position for matching
+      # [contents] [String] A string to modify, e.g. the contents of a file
+      # [regexp] [Regexp] A regular expression specifying a pattern to be matched
+      # [text] [String] Text to be appended to the specified pattern
+      # [global] Boolean flag. If true, patch all occurrences of the regex.
+      # [mode] [Symbol] :append, :prepend or :replace to specify how to apply the patch
+      # [offset] [Integer] Starting position for matching
       def apply_patch(contents, regexp, text, global, mode, offset)
         search_position = offset
         while (matches = regexp.match(contents, search_position))
@@ -37,12 +37,12 @@ module PatternPatch
       # cannot be reverted.
       # Returns a modified copy of the string.
       #
-      # :contents: A string to modify, e.g. the contents of a file
-      # :regexp: A regular expression specifying a pattern to be matched
-      # :text: Text to be appended to the specified pattern
-      # :global: Boolean flag. If true, patch all occurrences of the regex.
-      # :mode: :append or :prepend. :replace patches cannot be reverted automatically.
-      # :offset: Starting position for matching
+      # [contents] [String] A string to modify, e.g. the contents of a file
+      # [regexp] [Regexp] A regular expression specifying a pattern to be matched
+      # [text] [String] Text to be appended to the specified pattern
+      # [global] Boolean flag. If true, patch all occurrences of the regex.
+      # [mode] [Symbol] :append or :prepend. :replace patches cannot be reverted automatically.
+      # [offset] [Integer] Starting position for matching
       def revert_patch(contents, regexp, text, global, mode, offset)
         search_position = offset
         regexp_string = regexp.to_s
