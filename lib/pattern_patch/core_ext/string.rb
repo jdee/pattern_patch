@@ -3,7 +3,7 @@ class String
   # data from matches. Modifies the receiver. The receiver
   # need not match the matches.regexp.
   #
-  # :matches: A MatchData object returned by Regexp#match
+  # [matches] [MatchData] A MatchData object returned by Regexp#match
   def apply_matches!(matches)
     search_position = 0
     while (m = /\\(\d+)/.match(self, search_position))
@@ -19,7 +19,7 @@ class String
   # in self replaced by appropriate data from matches. The receiver
   # need not match the matches.regexp.
   #
-  # :matches: A MatchData object returned by Regexp#match
+  # [matches] [MatchData] A MatchData object returned by Regexp#match
   def apply_matches(matches)
     string = clone
     string.apply_matches! matches
