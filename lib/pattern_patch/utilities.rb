@@ -11,6 +11,7 @@ module PatternPatch
       # @param mode [Symbol] :append, :prepend or :replace to specify how to apply the patch
       # @param offset [Integer] Starting position for matching
       # @return [String] A modified copy of the contents argument
+      # @raise [ArgumentError] In case of invalid mode (other than :append, :prepend, :replace)
       def apply_patch(contents, regexp, text, global, mode, offset)
         search_position = offset
         while (matches = regexp.match(contents, search_position))
@@ -45,6 +46,7 @@ module PatternPatch
       # @param mode [Symbol] :append or :prepend. :replace patches cannot be reverted automatically.
       # @param offset [Integer] Starting position for matching
       # @return [String] A modified copy of the contents argument
+      # @raise [ArgumentError] In case of invalid mode (other than :append or :prepend)
       def revert_patch(contents, regexp, text, global, mode, offset)
         search_position = offset
         regexp_string = regexp.to_s

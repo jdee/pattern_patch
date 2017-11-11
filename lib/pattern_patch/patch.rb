@@ -10,31 +10,30 @@ module PatternPatch
   # The PatternPatch::Patch class defines a patch as an operation that
   # may be applied to any file. Often the operation may also be reverted.
   class Patch
+    # @!attribute regexp
     # Regexp defining one or more matching regions in a file.
     # @return [Regexp] The regular expression associated with this patch
     attr_accessor :regexp
 
+    # @!attribute text
     # String with text to use in the patch operation. May contain ERB.
     # @return [String] The text to use with this patch
     attr_accessor :text
 
+    # @!attribute mode
     # Symbol specifying the patch mode: :append (default), :prepend or :replace
     # @return [Symbol] The mode of this patch
     attr_accessor :mode
 
+    # @!attribute global
     # Setting this to true will apply the patch to all matches in the file.
     # By default (when false), the patch is only applied to the first match.
     # @return [true, false] Whether this patch is global
     attr_accessor :global
 
-    # @overload text_file
-    #   If set to a file path, the contents of that file will be used to populate
-    #   the text attribute.
-    #   @return [String] Path to a text file used to populate the text attribute
-    # @overload text_file=(path)
-    #   Set the text_file field to a new path. Setting this after construction
-    #   modifies the text field.
-    #   @param path [String] New path to a text file
+    # @!attribute text_file
+    # Path to a text file used to populate the text attribute. Setting this
+    # after construction modifies the text attribute.
     # @return [String] Path to a text file used to populate the text attribute
     attr_reader :text_file
 
@@ -88,8 +87,16 @@ module PatternPatch
     # Construct a new Patch from the options. The following fields are mapped
     # to the corresponding attributes: :regexp, :text, :text_file, :mode,
     # :global. Raises ArgumentError if both :text and :text_file are specified.
+    # All values may be modified between construction and calling #apply or
+    # #revert.
     #
     # @param options [Hash)] Parameters used to construct the Patch
+    # @option options [Regexp] :regexp Value for the regexp attribute
+    # @option options [String] :text Value for the text attribute
+    # @option options [String] :text_file Value for the text_file attribute
+    # @option options [Symbol] :mode (:append) Value for the mode attribute
+    # @option options [true, false] :global (false) Value for the global attribute
+    # @raise [ArgumentError] If both :text and :text_file are specified
     def initialize(options = {})
       raise ArgumentError, "text and text_file are mutually exclusive" if options[:text] && options[:text_file]
 
@@ -118,6 +125,9 @@ module PatternPatch
     #
     # @param files [Array, String] One or more file paths to which to apply the patch.
     # @param options [Hash] Options for applying the patch.
+    # @option options [Binding] :binding (nil) A Binding object to use when rendering ERB
+    # @option options [Integer] :offset (0) Offset in characters
+    # @raise [ArgumentError] In case of invalid mode (other than :append, :prepend, :replace)
     def apply(files, options = {})
       offset = options[:offset] || 0
       files = [files] if files.kind_of? String
@@ -142,6 +152,9 @@ module PatternPatch
     #
     # @param files [Array, String] One or more file paths to which to apply the patch.
     # @param options [Hash] Options for applying the patch.
+    # @option options [Binding] :binding (nil) A Binding object to use when rendering ERB
+    # @option options [Integer] :offset (0) Offset in characters
+    # @raise [ArgumentError] In case of invalid mode (other than :append or :prepend)
     def revert(files, options = {})
       offset = options[:offset] || 0
       files = [files] if files.kind_of? String
