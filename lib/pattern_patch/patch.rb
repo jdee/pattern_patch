@@ -2,26 +2,40 @@ require "active_support/core_ext/hash"
 require "erb"
 require "yaml"
 
+# Utility gem for modifying arbitrary text files using a method similar to
+# rendering Rails partials.
+#
+# @author Jimmy Dee (https://github.com/jdee)
 module PatternPatch
   # The PatternPatch::Patch class defines a patch as an operation that
   # may be applied to any file. Often the operation may also be reverted.
   class Patch
     # Regexp defining one or more matching regions in a file.
+    # @return [Regexp] The regular expression associated with this patch
     attr_accessor :regexp
 
     # String with text to use in the patch operation. May contain ERB.
+    # @return [String] The text to use with this patch
     attr_accessor :text
 
     # Symbol specifying the patch mode: :append (default), :prepend or :replace
+    # @return [Symbol] The mode of this patch
     attr_accessor :mode
 
     # Setting this to true will apply the patch to all matches in the file.
     # By default (when false), the patch is only applied to the first match.
+    # @return [true, false] Whether this patch is global
     attr_accessor :global
 
-    # If set to a file path, the contents of that file will be used to populate
-    # the text attribute. Setting this after construction modifies the text
-    # field.
+    # @overload text_file
+    #   If set to a file path, the contents of that file will be used to populate
+    #   the text attribute.
+    #   @return [String] Path to a text file used to populate the text attribute
+    # @overload text_file=(path)
+    #   Set the text_file field to a new path. Setting this after construction
+    #   modifies the text field.
+    #   @param path [String] New path to a text file
+    # @return [String] Path to a text file used to populate the text attribute
     attr_reader :text_file
 
     class << self
@@ -33,7 +47,8 @@ module PatternPatch
       # used to specify a Regexp with modifiers in YAML. Raises if the file
       # cannot be loaded.
       #
-      # [patch] [String] Path to a YAML file containing a patch definition.
+      # @param path [String] Path to a YAML file containing a patch definition
+      # @return [Patch] A Patch initialized from the file
       def from_yaml(path)
         hash = YAML.load_file(path).symbolize_keys
 
@@ -74,7 +89,7 @@ module PatternPatch
     # to the corresponding attributes: :regexp, :text, :text_file, :mode,
     # :global. Raises ArgumentError if both :text and :text_file are specified.
     #
-    # [options] [Hash] Parameters used to construct the Patch
+    # @param options [Hash)] Parameters used to construct the Patch
     def initialize(options = {})
       raise ArgumentError, "text and text_file are mutually exclusive" if options[:text] && options[:text_file]
 
@@ -101,8 +116,8 @@ module PatternPatch
     # ERB using the :binding option. Pass the :offset option to specify a
     # starting offset, in characters, from the beginning of the file.
     #
-    # [files] [Array or String] One or more file paths to which to apply the patch.
-    # [options] [Hash] Options for applying the patch.
+    # @param files [Array, String] One or more file paths to which to apply the patch.
+    # @param options [Hash] Options for applying the patch.
     def apply(files, options = {})
       offset = options[:offset] || 0
       files = [files] if files.kind_of? String
@@ -125,8 +140,8 @@ module PatternPatch
     # ERB using the :binding option. Pass the :offset option to specify a
     # starting offset, in characters, from the beginning of the file.
     #
-    # [files] [Array or String] One or more file paths to which to apply the patch.
-    # [options] [Hash] Options for applying the patch.
+    # @param files [Array, String] One or more file paths to which to apply the patch.
+    # @param options [Hash] Options for applying the patch.
     def revert(files, options = {})
       offset = options[:offset] || 0
       files = [files] if files.kind_of? String
@@ -144,8 +159,16 @@ module PatternPatch
       end
     end
 
+    # Returns a diagnostic string representation
+    # @return [String] Diagnostic string representation of this Patch
     def inspect
-      "#<PatternPatch::Patch regexp=#{regexp.inspect} text=#{text.inspect} mode=#{mode.inspect} global=#{global.inspect}>"
+      "#<PatternPatch::Patch regexp=#{regexp.inspect} text=#{text.inspect} text_file=#{text_file.inspect} mode=#{mode.inspect} global=#{global.inspect}>"
+    end
+
+    # Returns a string representation
+    # @return [String] String representation of this Patch
+    def to_s
+      inspect
     end
   end
 end
