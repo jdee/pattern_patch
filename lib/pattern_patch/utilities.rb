@@ -4,12 +4,14 @@ module PatternPatch
       # Add the specified text after the specified pattern.
       # Returns a modified copy of the string.
       #
-      # [contents] [String] A string to modify, e.g. the contents of a file
-      # [regexp] [Regexp] A regular expression specifying a pattern to be matched
-      # [text] [String] Text to be appended to the specified pattern
-      # [global] Boolean flag. If true, patch all occurrences of the regex.
-      # [mode] [Symbol] :append, :prepend or :replace to specify how to apply the patch
-      # [offset] [Integer] Starting position for matching
+      # @param contents [String] A string to modify, e.g. the contents of a file
+      # @param regexp [Regexp] A regular expression specifying a pattern to be matched
+      # @param text [String] Text to be appended to the specified pattern
+      # @param global [true, false] Boolean flag. If true, patch all occurrences of the regex.
+      # @param mode [Symbol] :append, :prepend or :replace to specify how to apply the patch
+      # @param offset [Integer] Starting position for matching
+      # @return [String] A modified copy of the contents argument
+      # @raise [ArgumentError] In case of invalid mode (other than :append, :prepend, :replace)
       def apply_patch(contents, regexp, text, global, mode, offset)
         search_position = offset
         while (matches = regexp.match(contents, search_position))
@@ -37,12 +39,14 @@ module PatternPatch
       # cannot be reverted.
       # Returns a modified copy of the string.
       #
-      # [contents] [String] A string to modify, e.g. the contents of a file
-      # [regexp] [Regexp] A regular expression specifying a pattern to be matched
-      # [text] [String] Text to be appended to the specified pattern
-      # [global] Boolean flag. If true, patch all occurrences of the regex.
-      # [mode] [Symbol] :append or :prepend. :replace patches cannot be reverted automatically.
-      # [offset] [Integer] Starting position for matching
+      # @param contents [String] A string to modify, e.g. the contents of a file
+      # @param regexp [Regexp] A regular expression specifying a pattern to be matched
+      # @param text [String] Text to be appended to the specified pattern
+      # @param global [true, false] Boolean flag. If true, patch all occurrences of the regex.
+      # @param mode [Symbol] :append or :prepend. :replace patches cannot be reverted automatically.
+      # @param offset [Integer] Starting position for matching
+      # @return [String] A modified copy of the contents argument
+      # @raise [ArgumentError] In case of invalid mode (other than :append or :prepend)
       def revert_patch(contents, regexp, text, global, mode, offset)
         search_position = offset
         regexp_string = regexp.to_s
