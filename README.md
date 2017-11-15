@@ -7,11 +7,13 @@
 
 Apply and revert pattern-based patches to any string or text file.
 
-This is a very preliminary utility gem to apply and revert patches to strings (typically file contents). One
+This is a preliminary utility gem to apply and revert patches to strings (typically file contents). One
 of the main intended use cases for this plugin is source-code modification, e.g.
 when automatically integrating an SDK.
 
 Please provide any feedback via issues in this repo.
+
+See the [full documentation](http://www.rubydoc.info/github/jdee/pattern_patch/) for more details.
 
 ```Ruby
 require "pattern_patch"
