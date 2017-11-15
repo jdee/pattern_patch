@@ -27,6 +27,53 @@ describe PatternPatch::Patch do
     end
   end
 
+  describe '#to_s' do
+    it 'is equal to #inspect' do
+      patch = PatternPatch::Patch.new
+      expect(patch.to_s).to eq patch.inspect
+    end
+  end
+
+  describe '#from_yaml' do
+    describe 'regexp field' do
+      it 'recognizes case-insensitive regexps in a text field' do
+        expect(YAML).to receive(:load_file) { { regexp: '/x/i' } }
+        patch = PatternPatch::Patch.from_yaml("foo.yml")
+        expect(patch.regexp).to eq(/x/i)
+      end
+
+      it 'recognizes extended regexps in a text field' do
+        expect(YAML).to receive(:load_file) { { regexp: '/x/x' } }
+        patch = PatternPatch::Patch.from_yaml("foo.yml")
+        expect(patch.regexp).to eq(/x/x)
+      end
+
+      it 'recognizes multiline regexps in a text field' do
+        expect(YAML).to receive(:load_file) { { regexp: '/x/m' } }
+        patch = PatternPatch::Patch.from_yaml("foo.yml")
+        expect(patch.regexp).to eq(/x/m)
+      end
+    end
+
+    describe 'text_file field' do
+      it 'interprets the path relative to the path of the YAML file' do
+        expect(YAML).to receive(:load_file) { { text_file: "file.txt" } }
+        expect(File).to receive(:read).with("/path/to/file.txt") { "" }
+        patch = PatternPatch::Patch.from_yaml("/path/to/foo.yml")
+        expect(patch.text_file).to eq "/path/to/file.txt"
+      end
+    end
+  end
+
+  describe '#text_file=' do
+    it 'loads the contents of the file as the #text field' do
+      patch = PatternPatch::Patch.new
+      expect(File).to receive(:read).with('foo.txt') { 'contents of foo.txt' }
+      patch.text_file = 'foo.txt'
+      expect(patch.text).to eq 'contents of foo.txt'
+    end
+  end
+
   describe '#apply' do
     it 'passes field values to the Utilities#apply_patch method' do
       patch = PatternPatch::Patch.new regexp: /x/, text: 'y'
