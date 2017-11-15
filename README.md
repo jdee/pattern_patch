@@ -132,6 +132,17 @@ regexp: '/^x/i'
 
 Currently only the slash literal notation is supported in YAML.
 
+#### Loading patches from a specific folder
+
+Use `PatternPatch.patch_dir` and `PatternPatch.patch` to easily load patches
+by name.
+
+```Ruby
+PatternPatch.patch_dir = "/path/to/patches"
+# Use /path/to/patches/patch_name.yml
+PatternPatch.patch(:patch_name).apply file_path
+```
+
 ### Why use pattern_patch?
 
 Modifying files from code is a common task. When modifying a file that uses a

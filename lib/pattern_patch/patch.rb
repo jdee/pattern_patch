@@ -2,10 +2,6 @@ require "active_support/core_ext/hash"
 require "erb"
 require "yaml"
 
-# Utility gem for modifying arbitrary text files using a method similar to
-# rendering Rails partials.
-#
-# @author Jimmy Dee (https://github.com/jdee)
 module PatternPatch
   # The PatternPatch::Patch class defines a patch as an operation that
   # may be applied to any file. Often the operation may also be reverted.
