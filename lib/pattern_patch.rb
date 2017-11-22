@@ -1,3 +1,4 @@
+require "forwardable"
 require "pattern_patch/core_ext"
 require "pattern_patch/patch"
 require "pattern_patch/utilities"
@@ -8,6 +9,8 @@ require "pattern_patch/version"
 #
 # @author Jimmy Dee (https://github.com/jdee)
 module PatternPatch
+  extend Forwardable
+
   # Generic exception class for PatternPatch exceptions
   class Error < RuntimeError; end
 
@@ -15,35 +18,25 @@ module PatternPatch
   class ConfigurationError < Error; end
 
   module Methods
+    extend Forwardable
+
     # @!attribute patch_dir
     # Set this to conveniently load patches from a common folder with
     # the patch method.
     # @return [String] Path to a directory for use with patch
     attr_accessor :patch_dir
 
-    # The default safe level to use with ERb
-    # @return [Object, nil] A valid $SAFE value for ERb
-    def safe_level
-      PatternPatch.safe_level
-    end
+    # @!attribute safe_level
+    # Set the default safe level to use with ERb
+    # @return [Object, nil] The current default safe level for ERb
+    def_delegator "PatternPatch", :safe_level, :safe_level
+    def_delegator "PatternPatch", :safe_level=, :safe_level=
 
-    # Set a new default safe level for use with ERb
-    # @param level [Object, nil] A valid $SAFE value for ERb
-    def safe_level=(level)
-      PatternPatch.safe_level = level
-    end
-
-    # The default trim mode to use with ERb
-    # @return [String, nil] A valid trim mode for ERb
-    def trim_mode
-      PatternPatch.trim_mode
-    end
-
-    # Set a new default trim mode for use with ERb
-    # @param mode [String, nil] A valid trim mode for ERb
-    def trim_mode=(mode)
-      PatternPatch.trim_mode = mode
-    end
+    # @!attribute safe_level
+    # Set the default trim mode to use with ERb
+    # @return [String, nil] The current default trim mode for ERb
+    def_delegator "PatternPatch", :trim_mode, :trim_mode
+    def_delegator "PatternPatch", :trim_mode=, :trim_mode=
 
     # Loads a patch from the patch_dir
     # @param name [#to_s] Name of a patch to load from the patch_dir
@@ -56,28 +49,16 @@ module PatternPatch
     end
   end
 
-  # The default safe level to use with ERb
-  # @return [Object, nil] A valid $SAFE value for ERb
-  def self.safe_level
-    @safe_level
-  end
+  class << self
+    # @!attribute safe_level
+    # The default safe level to use with ERb. Defaults to nil.
+    # @return [Object, nil] The current default safe level for ERb
+    attr_accessor :safe_level
 
-  # Set a new default safe level for use with ERb
-  # @param level [Object, nil] A valid $SAFE value for ERb
-  def self.safe_level=(level)
-    @safe_level = level
-  end
-
-  # The default trim mode to use with ERb
-  # @return [String, nil] A valid trim mode for ERb
-  def self.trim_mode
-    @trim_mode
-  end
-
-  # Set a new default trim mode for use with ERb
-  # @param mode [String, nil] A valid trim mode for ERb
-  def self.trim_mode=(mode)
-    @trim_mode = mode
+    # @!attribute trim_mode
+    # The default trim mode to use with ERb. Defaults to nil.
+    # @return [String, nil] The current default trim mode for ERb
+    attr_accessor :trim_mode
   end
 
   extend Methods
