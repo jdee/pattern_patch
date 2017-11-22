@@ -27,13 +27,15 @@ module PatternPatch
     attr_accessor :patch_dir
 
     # @!attribute safe_level
-    # Set the default safe level to use with ERb
+    # Set the default safe level to use with ERb. This is the same as the value
+    # of PatternPatch.safe_level.
     # @return [Object, nil] The current default safe level for ERb
     def_delegator "PatternPatch", :safe_level, :safe_level
     def_delegator "PatternPatch", :safe_level=, :safe_level=
 
-    # @!attribute safe_level
-    # Set the default trim mode to use with ERb
+    # @!attribute trim_mode
+    # Set the default trim mode to use with ERb. This is the same as the value
+    # of PatternPatch.trim_mode.
     # @return [String, nil] The current default trim mode for ERb
     def_delegator "PatternPatch", :trim_mode, :trim_mode
     def_delegator "PatternPatch", :trim_mode=, :trim_mode=
