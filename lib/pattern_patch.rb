@@ -21,6 +21,30 @@ module PatternPatch
     # @return [String] Path to a directory for use with patch
     attr_accessor :patch_dir
 
+    # The default safe level to use with ERb
+    # @return [Object, nil] A valid $SAFE value for ERb
+    def safe_level
+      PatternPatch.safe_level
+    end
+
+    # Set a new default safe level for use with ERb
+    # @param level [Object, nil] A valid $SAFE value for ERb
+    def safe_level=(level)
+      PatternPatch.safe_level = level
+    end
+
+    # The default trim mode to use with ERb
+    # @return [String, nil] A valid trim mode for ERb
+    def trim_mode
+      PatternPatch.trim_mode
+    end
+
+    # Set a new default trim mode for use with ERb
+    # @param mode [String, nil] A valid trim mode for ERb
+    def trim_mode=(mode)
+      PatternPatch.trim_mode = mode
+    end
+
     # Loads a patch from the patch_dir
     # @param name [#to_s] Name of a patch to load from the patch_dir
     # @return [Patch] A patch loaded from the patch_dir
@@ -30,6 +54,30 @@ module PatternPatch
       raise ConfigurationError, "patch_dir is not a directory" unless Dir.exist?(patch_dir)
       Patch.from_yaml File.join(patch_dir, "#{name}.yml")
     end
+  end
+
+  # The default safe level to use with ERb
+  # @return [Object, nil] A valid $SAFE value for ERb
+  def self.safe_level
+    @safe_level
+  end
+
+  # Set a new default safe level for use with ERb
+  # @param level [Object, nil] A valid $SAFE value for ERb
+  def self.safe_level=(level)
+    @safe_level = level
+  end
+
+  # The default trim mode to use with ERb
+  # @return [String, nil] A valid trim mode for ERb
+  def self.trim_mode
+    @trim_mode
+  end
+
+  # Set a new default trim mode for use with ERb
+  # @param mode [String, nil] A valid trim mode for ERb
+  def self.trim_mode=(mode)
+    @trim_mode = mode
   end
 
   extend Methods

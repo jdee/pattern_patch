@@ -123,12 +123,17 @@ module PatternPatch
     # @param options [Hash] Options for applying the patch.
     # @option options [Binding] :binding (nil) A Binding object to use when rendering ERB
     # @option options [Integer] :offset (0) Offset in characters
+    # @option options [Object, nil] :safe_level (nil) A valid value for $SAFE for use with ERb
+    # @option options [String] :trim_mode ("") A valid ERb trim mode
     # @raise [ArgumentError] In case of invalid mode (other than :append, :prepend, :replace)
     def apply(files, options = {})
       offset = options[:offset] || 0
       files = [files] if files.kind_of? String
 
-      patch_text = ERB.new(text).result options[:binding]
+      safe_level = options[:safe_level] || PatternPatch.safe_level
+      trim_mode = options[:trim_mode] || PatternPatch.trim_mode
+
+      patch_text = ERB.new(text, safe_level, trim_mode).result options[:binding]
 
       files.each do |path|
         modified = Utilities.apply_patch File.read(path),
@@ -150,12 +155,17 @@ module PatternPatch
     # @param options [Hash] Options for applying the patch.
     # @option options [Binding] :binding (nil) A Binding object to use when rendering ERB
     # @option options [Integer] :offset (0) Offset in characters
+    # @option options [Object, nil] :safe_level (nil) A valid value for $SAFE for use with ERb
+    # @option options [String] :trim_mode ("") A valid ERb trim mode
     # @raise [ArgumentError] In case of invalid mode (other than :append or :prepend)
     def revert(files, options = {})
       offset = options[:offset] || 0
       files = [files] if files.kind_of? String
 
-      patch_text = ERB.new(text).result options[:binding]
+      safe_level = options[:safe_level] || PatternPatch.safe_level
+      trim_mode = options[:trim_mode] || PatternPatch.trim_mode
+
+      patch_text = ERB.new(text, safe_level, trim_mode).result options[:binding]
 
       files.each do |path|
         modified = Utilities.revert_patch File.read(path),
