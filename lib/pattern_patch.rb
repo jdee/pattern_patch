@@ -1,3 +1,4 @@
+require "forwardable"
 require "pattern_patch/core_ext"
 require "pattern_patch/patch"
 require "pattern_patch/utilities"
@@ -8,6 +9,8 @@ require "pattern_patch/version"
 #
 # @author Jimmy Dee (https://github.com/jdee)
 module PatternPatch
+  extend Forwardable
+
   # Generic exception class for PatternPatch exceptions
   class Error < RuntimeError; end
 
@@ -15,11 +18,27 @@ module PatternPatch
   class ConfigurationError < Error; end
 
   module Methods
+    extend Forwardable
+
     # @!attribute patch_dir
     # Set this to conveniently load patches from a common folder with
     # the patch method.
     # @return [String] Path to a directory for use with patch
     attr_accessor :patch_dir
+
+    # @!attribute safe_level
+    # Set the default safe level to use with ERb. This is the same as the value
+    # of PatternPatch.safe_level.
+    # @return [Object, nil] The current default safe level for ERb
+    def_delegator "PatternPatch", :safe_level, :safe_level
+    def_delegator "PatternPatch", :safe_level=, :safe_level=
+
+    # @!attribute trim_mode
+    # Set the default trim mode to use with ERb. This is the same as the value
+    # of PatternPatch.trim_mode.
+    # @return [String, nil] The current default trim mode for ERb
+    def_delegator "PatternPatch", :trim_mode, :trim_mode
+    def_delegator "PatternPatch", :trim_mode=, :trim_mode=
 
     # Loads a patch from the patch_dir
     # @param name [#to_s] Name of a patch to load from the patch_dir
@@ -30,6 +49,18 @@ module PatternPatch
       raise ConfigurationError, "patch_dir is not a directory" unless Dir.exist?(patch_dir)
       Patch.from_yaml File.join(patch_dir, "#{name}.yml")
     end
+  end
+
+  class << self
+    # @!attribute safe_level
+    # The default safe level to use with ERb. Defaults to nil.
+    # @return [Object, nil] The current default safe level for ERb
+    attr_accessor :safe_level
+
+    # @!attribute trim_mode
+    # The default trim mode to use with ERb. Defaults to nil.
+    # @return [String, nil] The current default trim mode for ERb
+    attr_accessor :trim_mode
   end
 
   extend Methods

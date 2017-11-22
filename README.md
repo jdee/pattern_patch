@@ -117,6 +117,20 @@ PatternPatch::Patch.new(
 
 This is particularly useful with a `text_file` argument.
 
+The `#apply` and `#revert` methods also accept `:safe_level` and `:trim_mode`
+options for use with ERb. These can be set at the global level using
+`PatternPatch.safe_level` and `PatternPatch.trim_mode`. The `#safe_level`
+and '#trim_mode' attributes in the `Methods` module are convenience methods
+to set and retrieve these global values.
+
+```Ruby
+PatternPatch::Patch.new(
+  regexp: /x/,
+  text_file: "template.erb",
+  mode: :replace
+).apply file_path, trim_mode: "<>"
+```
+
 #### Regular expressions with modifiers in YAML
 
 The `regexp` field in a YAML file may be specified with or without slashes

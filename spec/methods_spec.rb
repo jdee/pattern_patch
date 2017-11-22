@@ -1,7 +1,19 @@
+include PatternPatch::Methods
+
 describe PatternPatch::Methods do
   it 'has an attr_accessor :patch_dir' do
     expect(PatternPatch).to respond_to(:patch_dir)
     expect(PatternPatch).to respond_to(:patch_dir=)
+  end
+
+  it 'has an attr_accessor :safe_level' do
+    expect(PatternPatch).to respond_to(:safe_level)
+    expect(PatternPatch).to respond_to(:safe_level=)
+  end
+
+  it 'has an attr_accessor :trim_mode' do
+    expect(PatternPatch).to respond_to(:trim_mode)
+    expect(PatternPatch).to respond_to(:trim_mode=)
   end
 
   describe '::patch' do
@@ -26,6 +38,26 @@ describe PatternPatch::Methods do
       expect(PatternPatch::Patch).to receive(:from_yaml).with("/some/path/foo.yml") { PatternPatch::Patch.new }
       PatternPatch.patch_dir = "/some/path"
       expect(PatternPatch.patch(:foo)).to be_a PatternPatch::Patch
+    end
+  end
+
+  describe '#safe_level' do
+    it 'delegates to the PatternPatch module' do
+      PatternPatch.safe_level = 0
+      expect(safe_level).to eq 0
+
+      self.safe_level = 1
+      expect(PatternPatch.safe_level).to eq 1
+    end
+  end
+
+  describe '#trim_mode' do
+    it 'delegates to the PatternPatch module' do
+      PatternPatch.trim_mode = "-"
+      expect(trim_mode).to eq "-"
+
+      self.trim_mode = "<>"
+      expect(PatternPatch.trim_mode).to eq "<>"
     end
   end
 end
