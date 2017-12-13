@@ -1,3 +1,6 @@
+Style/MixinUsage:
+  Enabled: true
+
 Style/MultipleComparison:
   Enabled: false
 

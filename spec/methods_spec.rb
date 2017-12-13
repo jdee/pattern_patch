@@ -1,6 +1,6 @@
-include PatternPatch::Methods
-
 describe PatternPatch::Methods do
+  include PatternPatch::Methods
+
   it 'has an attr_accessor :patch_dir' do
     expect(PatternPatch).to respond_to(:patch_dir)
     expect(PatternPatch).to respond_to(:patch_dir=)
