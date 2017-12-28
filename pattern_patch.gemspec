@@ -15,6 +15,8 @@ Gem::Specification.new do |spec|
   spec.homepage    = 'http://github.com/jdee/pattern_patch'
   spec.license     = 'MIT'
 
+  spec.required_ruby_version = '>= 2.0.0'
+
   spec.add_dependency 'activesupport'
 
   spec.add_development_dependency 'bundler'
@@ -23,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'rspec-simplecov'
   spec.add_development_dependency 'rspec_junit_formatter'
-  spec.add_development_dependency 'rubocop', '0.52.0'
+  spec.add_development_dependency 'rubocop', '0.50.0'
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'yard'
 end

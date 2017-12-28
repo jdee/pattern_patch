@@ -1,5 +1,5 @@
-Style/MixinUsage:
-  Enabled: true
+AllCops:
+  TargetRubyVersion: 2.0
 
 Style/MultipleComparison:
   Enabled: false
