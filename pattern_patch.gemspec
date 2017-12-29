@@ -15,9 +15,11 @@ Gem::Specification.new do |spec|
   spec.homepage    = 'http://github.com/jdee/pattern_patch'
   spec.license     = 'MIT'
 
+  # This is necessary to support the system Ruby (2.0.0) on OS X before High Sierra.
   spec.required_ruby_version = '>= 2.0.0'
 
-  spec.add_dependency 'activesupport'
+  # activesupport 5.x requires Ruby 2.2.
+  spec.add_dependency 'activesupport', '~> 4.2'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'pry'
