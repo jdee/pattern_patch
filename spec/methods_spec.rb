@@ -16,6 +16,23 @@ describe PatternPatch::Methods do
     expect(PatternPatch).to respond_to(:trim_mode=)
   end
 
+  describe '#patch_config' do
+    it 'yields self if a block is given' do
+      expected_return_value = :foo
+
+      return_value = patch_config do |config|
+        expect(config).to be self
+        expected_return_value
+      end
+
+      expect(return_value).to eq expected_return_value
+    end
+
+    it 'returns self if a block is given' do
+      expect(patch_config).to be self
+    end
+  end
+
   describe '::patch' do
     it 'raises if patch_dir is nil' do
       expect do
