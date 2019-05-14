@@ -19,7 +19,8 @@ Gem::Specification.new do |spec|
   # Sierra & Mojave.
   spec.required_ruby_version = '>= 2.3.0'
 
-  spec.add_dependency 'activesupport', '~> 5.0'
+  # Coexist with cocoapods, which requires ~> 4.0.2.
+  spec.add_dependency 'activesupport', ['>= 4.0.2', '< 6']
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'pry'
