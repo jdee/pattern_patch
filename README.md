@@ -159,6 +159,28 @@ PatternPatch.patch_dir = "/path/to/patches"
 PatternPatch.patch(:patch_name).apply file_path
 ```
 
+#### Configuration with patch_config method
+
+```Ruby
+include PatternPatch::Methods
+
+patch_config do |c|
+  c.patch_dir = File.expand_path '../assets/patches', __dir__
+  c.trim_mode = '<>'
+end
+```
+
+or
+
+```Ruby
+include PatternPatch::Methods
+
+patch_config.patch_dir = File.expand_path '../assets/patches', __dir__
+patch_config.trim_mode = '<>'
+
+patch(:my_patch).apply '/path/to/target/file'
+```
+
 ### Why use pattern_patch?
 
 Modifying files from code is a common task. When modifying a file that uses a

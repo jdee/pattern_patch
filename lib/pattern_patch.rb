@@ -46,8 +46,35 @@ module PatternPatch
     # @raise [ConfigurationError] If patch_dir is nil or is not a valid directory path
     def patch(name)
       raise ConfigurationError, "patch_dir has not been set" if patch_dir.nil?
-      raise ConfigurationError, "patch_dir is not a directory" unless Dir.exist?(patch_dir)
+      raise ConfigurationError, "patch_dir #{patch_dir} is not a directory" unless Dir.exist?(patch_dir)
+
       Patch.from_yaml File.join(patch_dir, "#{name}.yml")
+    end
+
+    # Useful to configure PatternPatch without using the class
+    # (PatternPatch.patch_dir=), ivar (@patch_dir) or explicit
+    # setter (self.patch_dir=).
+    #
+    #     include PatternPatch::Methods
+    #     patch_config do |c|
+    #       c.patch_dir = 'lib/assets/patches'
+    #       c.trim_mode = '<>'
+    #     end
+    #
+    # or
+    #
+    #     include PatternPatch::Methods
+    #     patch_config.patch_dir = 'lib/assets/patches'
+    #     patch_config.trim_mode = '<>'
+    #
+    # @yield self if block_given?
+    # @return self or return value of block
+    def patch_config(&block)
+      if block_given?
+        yield self
+      else
+        self
+      end
     end
   end
 

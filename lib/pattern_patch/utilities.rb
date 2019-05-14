@@ -29,6 +29,7 @@ module PatternPatch
 
           contents = "#{matches.pre_match}#{patched_pattern}#{matches.post_match}"
           break unless global
+
           search_position = matches.pre_match.length + patched_pattern.length
         end
         contents
@@ -71,6 +72,7 @@ module PatternPatch
           reverted_text = matches[0].sub(text.apply_matches(matches), '')
           contents = "#{matches.pre_match}#{reverted_text}#{matches.post_match}"
           break unless global
+
           search_position = matches.pre_match.length + reverted_text.length
         end
 
