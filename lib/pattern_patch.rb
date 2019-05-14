@@ -47,6 +47,7 @@ module PatternPatch
     def patch(name)
       raise ConfigurationError, "patch_dir has not been set" if patch_dir.nil?
       raise ConfigurationError, "patch_dir #{patch_dir} is not a directory" unless Dir.exist?(patch_dir)
+
       Patch.from_yaml File.join(patch_dir, "#{name}.yml")
     end
 
