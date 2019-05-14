@@ -168,6 +168,8 @@ patch_config do |c|
   c.patch_dir = File.expand_path '../assets/patches', __dir__
   c.trim_mode = '<>'
 end
+
+patch(:my_patch).apply '/path/to/target/file'
 ```
 
 or
