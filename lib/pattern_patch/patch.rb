@@ -142,7 +142,7 @@ module PatternPatch
 
       raise ArgumentError, ':binding is incompatible with locals' unless binding_option.nil? || locals.empty?
 
-      renderer = Renderer.new ERB.new(text, safe_level, trim_mode)
+      renderer = Renderer.new text, safe_level, trim_mode
       if locals.empty?
         patch_text = renderer.render binding_option
       else
@@ -187,7 +187,7 @@ module PatternPatch
 
       raise ArgumentError, ':binding is incompatible with locals' unless binding_option.nil? || locals.empty?
 
-      renderer = Renderer.new ERB.new(text, safe_level, trim_mode)
+      renderer = Renderer.new text, safe_level, trim_mode
       if locals.empty?
         patch_text = renderer.render binding_option
       else
