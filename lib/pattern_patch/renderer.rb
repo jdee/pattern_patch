@@ -11,22 +11,23 @@ module PatternPatch
     #     renderer = Renderer.new template_text
     #     result = renderer.render binding
     #     result = renderer.render a: 'foo', b: 1
-    # @param locals [Hash, Binding] a Binding or a Hash of locals
-    def render(locals = {})
-      if !locals.kind_of?(Hash)
-        # Pass a binding this way.
-        template.result locals
+    # @param locals_or_binding [Hash, Binding] a Hash of locals or a Binding
+    # @return the result of rendering the template
+    def render(locals_or_binding = {})
+      if !locals_or_binding.kind_of?(Hash)
+        # Pass a Binding this way.
+        template.result locals_or_binding
       elsif template.respond_to? :result_with_hash
         # ERB#result_with_hash requires Ruby 2.5.
-        template.result_with_hash locals
+        template.result_with_hash locals_or_binding
       else
-        @locals = locals
+        @locals = locals_or_binding
         template.result binding
       end
     end
 
     def method_missing(method_sym, *args, &block)
-      return super unless @locals.has_key?(method_sym)
+      return super unless @locals.key?(method_sym)
 
       @locals[method_sym]
     end
