@@ -19,16 +19,13 @@ Gem::Specification.new do |spec|
   # Sierra & Mojave.
   spec.required_ruby_version = '>= 2.3.0'
 
-  # Coexist with cocoapods, which requires ~> 4.0.2.
-  spec.add_dependency 'activesupport', ['>= 4.0.2', '< 6']
-
-  spec.add_development_dependency 'bundler'
-  spec.add_development_dependency 'pry'
-  spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'rspec'
-  spec.add_development_dependency 'rspec-simplecov'
-  spec.add_development_dependency 'rspec_junit_formatter'
+  spec.add_development_dependency 'bundler', ['>= 1.16', '< 3']
+  spec.add_development_dependency 'pry', '~> 0.12'
+  spec.add_development_dependency 'rake', '~> 12.3'
+  spec.add_development_dependency 'rspec', '~> 3.8'
+  spec.add_development_dependency 'rspec-simplecov', '~> 0.2'
+  spec.add_development_dependency 'rspec_junit_formatter', '~> 0.4'
   spec.add_development_dependency 'rubocop', '0.65.0'
-  spec.add_development_dependency 'simplecov'
-  spec.add_development_dependency 'yard'
+  spec.add_development_dependency 'simplecov', '~> 0.16'
+  spec.add_development_dependency 'yard', '~> 0.9'
 end

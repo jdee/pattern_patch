@@ -1,6 +1,6 @@
-require "active_support/core_ext/hash"
-require "erb"
-require "yaml"
+require 'erb'
+require 'yaml'
+require_relative 'core_ext/hash'
 
 module PatternPatch
   # The PatternPatch::Patch class defines a patch as an operation that
