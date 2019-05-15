@@ -121,7 +121,7 @@ PatternPatch::Patch.new(
   regexp: /x/,
   text: '<%= replacement_text %>',
   mode: :replace
-).apply file_path, replacement_text: 'y'
+).apply file_path, locals: { replacement_text: 'y' }
 ```
 
 This is particularly useful with a `text_file` argument.
