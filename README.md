@@ -107,12 +107,21 @@ PatternPatch::Patch.new(
 Optionally pass a `:binding` option to `#apply` to use a specific Binding:
 
 ```Ruby
-replacement_text = "y"
+replacement_text = 'y'
 PatternPatch::Patch.new(
   regexp: /x/,
   text: '<%= replacement_text %>',
   mode: :replace
 ).apply file_path, binding: binding
+```
+
+or a Hash of locals for the template:
+```Ruby
+PatternPatch::Patch.new(
+  regexp: /x/,
+  text: '<%= replacement_text %>',
+  mode: :replace
+).apply file_path, locals: { replacement_text: 'y' }
 ```
 
 This is particularly useful with a `text_file` argument.

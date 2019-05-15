@@ -1,6 +1,7 @@
 require 'erb'
 require 'yaml'
 require_relative 'core_ext/hash'
+require_relative 'renderer'
 
 module PatternPatch
   # The PatternPatch::Patch class defines a patch as an operation that
@@ -116,7 +117,7 @@ module PatternPatch
 
     # Applies the patch to one or more files. ERB is processed in the text
     # field, whether it comes from a text_file or not. Pass a Binding to
-    # ERB using the :binding option. Pass the :offset option to specify a
+    # ERB using the :binding option or a Hash of locals. Pass the :offset option to specify a
     # starting offset, in characters, from the beginning of the file.
     #
     # @param files [Array, String] One or more file paths to which to apply the patch.
@@ -125,6 +126,7 @@ module PatternPatch
     # @option options [Integer] :offset (0) Offset in characters
     # @option options [Object, nil] :safe_level (PatternPatch.safe_level) A valid value for $SAFE for use with ERb
     # @option options [String] :trim_mode (PatternPatch.trim_mode) A valid ERb trim mode
+    # @option options [Hash] :locals A Hash of local variables for rendering the template
     # @raise [ArgumentError] In case of invalid mode (other than :append, :prepend, :replace)
     def apply(files, options = {})
       offset = options[:offset] || 0
@@ -133,7 +135,16 @@ module PatternPatch
       safe_level = options[:safe_level] || PatternPatch.safe_level
       trim_mode = options[:trim_mode] || PatternPatch.trim_mode
 
-      patch_text = ERB.new(text, safe_level, trim_mode).result options[:binding]
+      locals = options[:locals]
+
+      raise ArgumentError, ':binding is incompatible with :locals' if options[:binding] && locals
+
+      renderer = Renderer.new text, safe_level, trim_mode
+      if locals.nil?
+        patch_text = renderer.render options[:binding]
+      else
+        patch_text = renderer.render locals
+      end
 
       files.each do |path|
         modified = Utilities.apply_patch File.read(path),
@@ -148,7 +159,7 @@ module PatternPatch
 
     # Reverse the effect of a patch on one or more files. ERB is processed in the text
     # field, whether it comes from a text_file or not. Pass a Binding to
-    # ERB using the :binding option. Pass the :offset option to specify a
+    # ERB using the :binding option or a Hash of locals. Pass the :offset option to specify a
     # starting offset, in characters, from the beginning of the file.
     #
     # @param files [Array, String] One or more file paths to which to apply the patch.
@@ -157,6 +168,7 @@ module PatternPatch
     # @option options [Integer] :offset (0) Offset in characters
     # @option options [Object, nil] :safe_level (PatternPatch.safe_level) A valid value for $SAFE for use with ERb
     # @option options [String] :trim_mode (PatternPatch.trim_mode) A valid ERb trim mode
+    # @option options [Hash] :locals A Hash of local variables for rendering the template
     # @raise [ArgumentError] In case of invalid mode (other than :append or :prepend)
     def revert(files, options = {})
       offset = options[:offset] || 0
@@ -165,7 +177,16 @@ module PatternPatch
       safe_level = options[:safe_level] || PatternPatch.safe_level
       trim_mode = options[:trim_mode] || PatternPatch.trim_mode
 
-      patch_text = ERB.new(text, safe_level, trim_mode).result options[:binding]
+      locals = options[:locals]
+
+      raise ArgumentError, ':binding is incompatible with :locals' if options[:binding] && locals
+
+      renderer = Renderer.new text, safe_level, trim_mode
+      if locals.nil?
+        patch_text = renderer.render options[:binding]
+      else
+        patch_text = renderer.render locals
+      end
 
       files.each do |path|
         modified = Utilities.revert_patch File.read(path),
