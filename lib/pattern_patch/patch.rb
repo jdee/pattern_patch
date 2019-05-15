@@ -144,6 +144,7 @@ module PatternPatch
       if locals.empty?
         patch_text = ERB.new(text, safe_level, trim_mode).result options[:binding]
       else
+        raise ArgumentError, 'Locals require Ruby >= 2.5.' unless ERB.method_defined?(:result_with_hash)
         patch_text = ERB.new(text, safe_level, trim_mode).result_with_hash locals
       end
 
@@ -188,6 +189,7 @@ module PatternPatch
       if locals.empty?
         patch_text = ERB.new(text, safe_level, trim_mode).result options[:binding]
       else
+        raise ArgumentError, 'Locals require Ruby >= 2.5.' unless ERB.method_defined?(:result_with_hash)
         patch_text = ERB.new(text, safe_level, trim_mode).result_with_hash locals
       end
 
