@@ -116,7 +116,7 @@ module PatternPatch
 
     # Applies the patch to one or more files. ERB is processed in the text
     # field, whether it comes from a text_file or not. Pass a Binding to
-    # ERB using the :binding option. Pass the :offset option to specify a
+    # ERB using the :binding option or a Hash of locals. Pass the :offset option to specify a
     # starting offset, in characters, from the beginning of the file.
     #
     # @param files [Array, String] One or more file paths to which to apply the patch.
@@ -133,7 +133,19 @@ module PatternPatch
       safe_level = options[:safe_level] || PatternPatch.safe_level
       trim_mode = options[:trim_mode] || PatternPatch.trim_mode
 
-      patch_text = ERB.new(text, safe_level, trim_mode).result options[:binding]
+      locals = options.clone
+      binding_option = locals.delete :binding
+      locals.delete :offset
+      locals.delete :safe_level
+      locals.delete :trim_mode
+
+      raise ArgumentError, ':binding is incompatible with locals' unless binding_option.nil? || locals.empty?
+
+      if locals.empty?
+        patch_text = ERB.new(text, safe_level, trim_mode).result options[:binding]
+      else
+        patch_text = ERB.new(text, safe_level, trim_mode).result_with_hash locals
+      end
 
       files.each do |path|
         modified = Utilities.apply_patch File.read(path),
@@ -148,7 +160,7 @@ module PatternPatch
 
     # Reverse the effect of a patch on one or more files. ERB is processed in the text
     # field, whether it comes from a text_file or not. Pass a Binding to
-    # ERB using the :binding option. Pass the :offset option to specify a
+    # ERB using the :binding option or a Hash of locals. Pass the :offset option to specify a
     # starting offset, in characters, from the beginning of the file.
     #
     # @param files [Array, String] One or more file paths to which to apply the patch.
@@ -165,7 +177,19 @@ module PatternPatch
       safe_level = options[:safe_level] || PatternPatch.safe_level
       trim_mode = options[:trim_mode] || PatternPatch.trim_mode
 
-      patch_text = ERB.new(text, safe_level, trim_mode).result options[:binding]
+      locals = options.clone
+      binding_option = locals.delete :binding
+      locals.delete :offset
+      locals.delete :safe_level
+      locals.delete :trim_mode
+
+      raise ArgumentError, ':binding is incompatible with locals' unless binding_option.nil? || locals.empty?
+
+      if locals.empty?
+        patch_text = ERB.new(text, safe_level, trim_mode).result options[:binding]
+      else
+        patch_text = ERB.new(text, safe_level, trim_mode).result_with_hash locals
+      end
 
       files.each do |path|
         modified = Utilities.revert_patch File.read(path),
