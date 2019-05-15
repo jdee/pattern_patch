@@ -1,7 +1,7 @@
+require_relative 'core_ext/hash'
+
 module PatternPatch
   class Renderer
-    attr_reader :template
-
     def initialize(text, safe_level = nil, trim_mode = nil)
       @template = ERB.new text, safe_level, trim_mode
       @locals = {}
@@ -16,13 +16,13 @@ module PatternPatch
     def render(locals_or_binding = {})
       if !locals_or_binding.kind_of?(Hash)
         # Pass a Binding this way.
-        template.result locals_or_binding
+        @template.result locals_or_binding
       elsif template.respond_to? :result_with_hash
         # ERB#result_with_hash requires Ruby 2.5.
-        template.result_with_hash locals_or_binding
+        @template.result_with_hash locals_or_binding
       else
-        @locals = locals_or_binding
-        template.result binding
+        @locals = locals_or_binding.symbolize_keys
+        @template.result binding
       end
     end
 
