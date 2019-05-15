@@ -1,6 +1,5 @@
 require 'erb'
 require 'yaml'
-require_relative 'core_ext/hash'
 
 module PatternPatch
   # The PatternPatch::Patch class defines a patch as an operation that
@@ -45,7 +44,7 @@ module PatternPatch
       # @param path [String] Path to a YAML file containing a patch definition
       # @return [Patch] A Patch initialized from the file
       def from_yaml(path)
-        hash = YAML.load_file(path).symbolize_keys
+        hash = YAML.load_file(path).transform_keys(&:to_sym)
 
         # Adjust string fields from YAML
 
