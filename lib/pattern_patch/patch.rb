@@ -1,6 +1,7 @@
 require 'erb'
 require 'yaml'
 require_relative 'core_ext/hash'
+require_relative 'renderer'
 
 module PatternPatch
   # The PatternPatch::Patch class defines a patch as an operation that
@@ -141,11 +142,11 @@ module PatternPatch
 
       raise ArgumentError, ':binding is incompatible with locals' unless binding_option.nil? || locals.empty?
 
+      renderer = Renderer.new ERB.new(text, safe_level, trim_mode)
       if locals.empty?
-        patch_text = ERB.new(text, safe_level, trim_mode).result options[:binding]
+        patch_text = renderer.render binding_option
       else
-        raise ArgumentError, 'Locals require Ruby >= 2.5.' unless ERB.method_defined?(:result_with_hash)
-        patch_text = ERB.new(text, safe_level, trim_mode).result_with_hash locals
+        patch_text = renderer.render locals
       end
 
       files.each do |path|
@@ -186,11 +187,11 @@ module PatternPatch
 
       raise ArgumentError, ':binding is incompatible with locals' unless binding_option.nil? || locals.empty?
 
+      renderer = Renderer.new ERB.new(text, safe_level, trim_mode)
       if locals.empty?
-        patch_text = ERB.new(text, safe_level, trim_mode).result options[:binding]
+        patch_text = renderer.render binding_option
       else
-        raise ArgumentError, 'Locals require Ruby >= 2.5.' unless ERB.method_defined?(:result_with_hash)
-        patch_text = ERB.new(text, safe_level, trim_mode).result_with_hash locals
+        patch_text = renderer.render locals
       end
 
       files.each do |path|
