@@ -1,4 +1,5 @@
 require_relative 'core_ext/hash'
+require 'rubygems'
 
 module PatternPatch
   # Provides a fairly clean binding for resolving locals in Ruby < 2.5.
@@ -6,8 +7,20 @@ module PatternPatch
   # class (instead of a Module, e.g.) means minimal clutter in the set of
   # methods available to the binding.
   class Renderer
+    class << self
+      def is_ruby3?
+        version = Gem::Version.new RUBY_VERSION
+        requirement = Gem::Requirement.new '>= 3'
+        requirement =~ version
+      end
+    end
+
     def initialize(text, safe_level = nil, trim_mode = nil)
-      @template = ERB.new text, safe_level, trim_mode
+      if self.class.is_ruby3?
+        @template = ERB.new text, trim_mode: trim_mode
+      else
+        @template = ERB.new text, safe_level, trim_mode
+      end
       @locals = {}
     end
 
