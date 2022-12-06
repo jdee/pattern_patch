@@ -7,8 +7,8 @@ Gem::Specification.new do |spec|
   spec.version     = PatternPatch::VERSION
   spec.summary     = "Apply and revert pattern-based patches to text files of any kind"
   spec.description = "This is a utility gem that identifies positions in any text using regular expressions " \
-                       "and then inserts patch text at the specified location or replaces matching text. " \
-                       "Many patches can be reverted."
+                     "and then inserts patch text at the specified location or replaces matching text. " \
+                     "Many patches can be reverted."
   spec.authors     = ["Jimmy Dee"]
   spec.email       = 'jgvdthree@gmail.com'
   spec.files       = Dir["lib/**/*.rb"]
@@ -23,9 +23,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry', '~> 0.12'
   spec.add_development_dependency 'rake', '~> 12.3'
   spec.add_development_dependency 'rspec', '~> 3.8'
-  spec.add_development_dependency 'rspec-simplecov', '~> 0.2'
   spec.add_development_dependency 'rspec_junit_formatter', '~> 0.4'
-  spec.add_development_dependency 'rubocop', '0.65.0'
+  spec.add_development_dependency 'rspec-simplecov', '~> 0.2'
+  spec.add_development_dependency 'rubocop', '1.39.0'
   spec.add_development_dependency 'simplecov', '~> 0.16'
   spec.add_development_dependency 'yard', '~> 0.9'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end
